@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List With Vue.Js</title>
+
+    <script src="https://unpkg.com/vue@3"></script>
+
+
+</head>
+<body>
+    <div id="toDo-app">
+        <h1>My awesome To Do List with Vue JS</h1>
+        
+
+        <ajout @nouvellenote="addItems"></ajout>
+        <note v-for="list in lists" v-bind:content="list" @click="reversedList"></note>
+    
+    </div>
+
+    <script>
+        const toDo = Vue.createApp({
+            data(){
+                return {
+                    lists: ["Save the world", "Buy toothbrush", "Earn money"]
+                }
+            },
+            methods: {
+                reversedList(){
+                    this.lists.reverse();
+                },
+                addItems(message){
+                    this.lists.push(message)
+                }
+            }
+        })
+        
+        toDo.component('note', {
+            props: ['content'],
+            template: `<p> {{content}} </p>`
+        })
+
+        toDo.component('ajout', {
+            props: [],
+            emits: ['nouvellenote'],
+            data() {
+                return {
+                    internMessage: 'Add a new task'
+                }
+            },
+            methods: {
+                addNewItems(){
+                    this.$emit('nouvellenote', this.internMessage);
+                    this.internMessage = '';
+                }
+            },
+            template: `
+            <input type="text" v-model="internMessage" @click="internMessage = '' "/>
+            <button @click="addNewItems">Add</button>`
+        })
+
+        toDo.mount("#toDo-app")
+    </script>
+</body>
+</html>
